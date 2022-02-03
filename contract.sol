@@ -2,6 +2,9 @@ pragma solidity ^0.4.19;
 
 contract ZombieFactory {
 
+    // イベントをここで宣言するのだ
+    event NewZombie(uint zombieId, string name, uint dna);
+
     uint dnaDigits = 16;
     uint dnaModulus = 10 ** dnaDigits;
 
@@ -13,8 +16,11 @@ contract ZombieFactory {
     Zombie[] public zombies;
 
     function _createZombie(string _name, uint _dna) private {
-        zombies.push(Zombie(_name, _dna));
-    } 
+        // zombies.push(Zombie(_name, _dna));
+        // ここでイベントを発生させるのだ
+        uint id = zombies.push(Zombie(_name, _dna)) - 1;
+        NewZombie(id, _name, _dna);
+    }
 
     function _generateRandomDna(string _str) private view returns (uint) {
         uint rand = uint(keccak256(_str));
